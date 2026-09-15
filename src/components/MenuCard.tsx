@@ -14,8 +14,7 @@ export function MenuCard({ item }: { item: MenuItem }) {
       name: item.name,
       image: item.image,
       quantity: 1,
-      sizeId: size?.id,
-      sizeLabel: size?.label,
+      ...(size ? { sizeId: size.id, sizeLabel: size.label } : {}),
       options: [],
       unitPrice: item.price + (size?.priceDelta ?? 0),
     });
