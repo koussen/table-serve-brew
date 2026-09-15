@@ -213,7 +213,9 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     setOrders((prev) =>
       prev.map((o) => {
         if (o.id !== id) return o;
-        const next = statusFlow[Math.min(statusFlow.indexOf(o.status) + 1, statusFlow.length - 1)];
+        const next =
+          statusFlow[Math.min(statusFlow.indexOf(o.status) + 1, statusFlow.length - 1)] ??
+          o.status;
         return { ...o, status: next };
       }),
     );
