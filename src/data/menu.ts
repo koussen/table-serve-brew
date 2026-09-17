@@ -414,4 +414,4 @@ export function getMenuItem(id: string) {
   return menu.find((item) => item.id === id);
 }
 
-export const featuredItems = menu.filter((item) => item.featured);
+export const featuredItems = menu.filter((item) => item.featured).slice(0, 4);

@@ -95,7 +95,7 @@ function Home() {
                 className="aspect-square w-full rounded-[min(1vw,12px)] object-cover"
               />
             </div>
-            <div className="soft -mt-6 ml-auto w-[85%] rounded-[min(1vw,12px)] p-4 ring-1 ring-white/40 sm:w-[60%]">
+            <div className="soft relative z-10 -mt-6 ml-auto w-[85%] rounded-[min(1vw,12px)] p-4 ring-1 ring-white/40 sm:w-[60%]">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-xs uppercase tracking-[0.15em] text-foreground/50">
