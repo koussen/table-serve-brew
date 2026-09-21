@@ -7,19 +7,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type {
-  CartLine,
-  Order,
-  OrderDetails,
-  OrderStatus,
-  PaymentMethod,
-} from "./types";
+import type { CartLine, OrderDetails, OrderStatus } from "./types";
 import { shop } from "./shop";
 
 const CART_KEY = "kk.cart";
 const DETAILS_KEY = "kk.details";
-const ORDERS_KEY = "kk.orders";
-const COUNTER_KEY = "kk.counter";
 
 const emptyDetails: OrderDetails = {
   type: "dineIn",
@@ -45,7 +37,7 @@ function write(key: string, value: unknown) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    /* storage unavailable — demo continues in memory */
+    /* storage unavailable — the cart continues in memory */
   }
 }
 
@@ -53,7 +45,6 @@ type Ctx = {
   hydrated: boolean;
   lines: CartLine[];
   details: OrderDetails;
-  orders: Order[];
   itemCount: number;
   subtotal: number;
   deliveryFee: number;
@@ -65,9 +56,6 @@ type Ctx = {
   removeLine: (lineId: string) => void;
   clearCart: () => void;
   updateDetails: (patch: Partial<OrderDetails>) => void;
-  placeOrder: (paymentMethod: PaymentMethod) => Order;
-  getOrder: (id: string) => Order | undefined;
-  advanceStatus: (id: string) => void;
 };
 
 const OrderContext = createContext<Ctx | null>(null);
@@ -78,15 +66,11 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [lines, setLines] = useState<CartLine[]>([]);
   const [details, setDetails] = useState<OrderDetails>(emptyDetails);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [counter, setCounter] = useState(1041);
   const [cartOpen, setCartOpen] = useState(false);
 
   useEffect(() => {
     setLines(read<CartLine[]>(CART_KEY, []));
     setDetails(read<OrderDetails>(DETAILS_KEY, emptyDetails));
-    setOrders(read<Order[]>(ORDERS_KEY, []));
-    setCounter(read<number>(COUNTER_KEY, 1041));
 
     // QR table ordering: /any-route?table=12 pre-fills the table number.
     const table = new URLSearchParams(window.location.search).get("table");
@@ -102,12 +86,6 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (hydrated) write(DETAILS_KEY, details);
   }, [details, hydrated]);
-  useEffect(() => {
-    if (hydrated) write(ORDERS_KEY, orders);
-  }, [orders, hydrated]);
-  useEffect(() => {
-    if (hydrated) write(COUNTER_KEY, counter);
-  }, [counter, hydrated]);
 
   const addLine = useCallback((line: Omit<CartLine, "lineId" | "subtotal">) => {
     setLines((prev) => {
@@ -174,58 +152,10 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const total = subtotal + deliveryFee;
   const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
 
-  const placeOrder = useCallback(
-    (paymentMethod: PaymentMethod) => {
-      const number = counter + 1;
-      const order: Order = {
-        id: String(number),
-        number,
-        type: details.type,
-        customerName: details.customerName,
-        phone: details.phone,
-        tableNumber: details.tableNumber,
-        address: details.address,
-        notes: details.notes,
-        items: lines,
-        subtotal,
-        deliveryFee,
-        total,
-        paymentMethod,
-        // Demo only: no payment gateway is connected, so nothing is charged.
-        paymentStatus: "demo_confirmed",
-        status: "received",
-        createdAt: new Date().toISOString(),
-      };
-      setCounter(number);
-      setOrders((prev) => [order, ...prev]);
-      setLines([]);
-      return order;
-    },
-    [counter, details, lines, subtotal, deliveryFee, total],
-  );
-
-  const getOrder = useCallback(
-    (id: string) => orders.find((o) => o.id === id),
-    [orders],
-  );
-
-  const advanceStatus = useCallback((id: string) => {
-    setOrders((prev) =>
-      prev.map((o) => {
-        if (o.id !== id) return o;
-        const next =
-          statusFlow[Math.min(statusFlow.indexOf(o.status) + 1, statusFlow.length - 1)] ??
-          o.status;
-        return { ...o, status: next };
-      }),
-    );
-  }, []);
-
   const value: Ctx = {
     hydrated,
     lines,
     details,
-    orders,
     itemCount,
     subtotal,
     deliveryFee,
@@ -237,9 +167,6 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     removeLine,
     clearCart,
     updateDetails,
-    placeOrder,
-    getOrder,
-    advanceStatus,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;
