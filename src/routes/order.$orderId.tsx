@@ -1,22 +1,29 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/SiteLayout";
 import { OrderStatusTrack } from "@/components/OrderStatusTrack";
-import { useOrder, orderTypeCopy } from "@/lib/order-store";
+import { orderTypeCopy } from "@/lib/order-store";
+import { getOrderByToken } from "@/lib/orders.functions";
 import { peso } from "@/lib/format";
 import { shop } from "@/lib/shop";
 
 export const Route = createFileRoute("/order/$orderId")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    t: typeof search['t'] === "string" ? (search['t'] as string) : "",
+    paid: search['paid'] === "1" || search['paid'] === 1 ? true : undefined,
+  }),
   head: () => ({
     meta: [
-      { title: "Order Confirmed — Kape & Klase" },
+      { title: "Your Order — Kape & Klase" },
       {
         name: "description",
-        content: "Your Kape & Klase order is confirmed. Track its status from received to served.",
+        content: "Track your Kape & Klase order from received to served.",
       },
-      { property: "og:title", content: "Order Confirmed — Kape & Klase" },
+      { property: "og:title", content: "Your Order — Kape & Klase" },
       {
         property: "og:description",
-        content: "Your order is confirmed. Track its status from received to served.",
+        content: "Track your order from received to served.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -26,12 +33,27 @@ export const Route = createFileRoute("/order/$orderId")({
 
 const methodLabel = { gcash: "GCash", card: "Card", cash: "Cash" } as const;
 
+const paymentLabel: Record<string, string> = {
+  pending: "Awaiting payment",
+  paid: "Paid",
+  pay_on_arrival: "Pay at the café",
+  failed: "Payment not completed",
+};
+
 function OrderPage() {
   const { orderId } = Route.useParams();
-  const { getOrder, advanceStatus, hydrated } = useOrder();
-  const order = getOrder(orderId);
+  const { t } = Route.useSearch();
+  const fetchOrder = useServerFn(getOrderByToken);
 
-  if (!hydrated) {
+  const { data: order, isPending } = useQuery({
+    queryKey: ["order", orderId, t],
+    queryFn: () => fetchOrder({ data: { orderId, token: t } }),
+    enabled: Boolean(t),
+    // Live status: the café updates this from the counter.
+    refetchInterval: 15000,
+  });
+
+  if (isPending && t) {
     return (
       <SiteLayout>
         <div className="py-24 text-center text-sm text-foreground/50">Loading your order…</div>
@@ -45,7 +67,7 @@ function OrderPage() {
         <div className="py-24 text-center">
           <h1 className="font-serif text-2xl font-semibold">We can't find that order.</h1>
           <p className="mt-2 text-sm text-foreground/60">
-            Demo orders are kept on this device only.
+            Please open the exact link you received after ordering.
           </p>
           <Link to="/menu" className="mt-5 inline-block text-sm font-medium text-clay">
             Start a new order
@@ -54,8 +76,6 @@ function OrderPage() {
       </SiteLayout>
     );
   }
-
-  const served = order.status === "served";
 
   return (
     <SiteLayout>
@@ -78,14 +98,9 @@ function OrderPage() {
 
       <section className="pb-8">
         <OrderStatusTrack status={order.status} />
-        <button
-          type="button"
-          onClick={() => advanceStatus(order.id)}
-          disabled={served}
-          className="mt-3 rounded-[min(1vw,10px)] px-4 py-2.5 text-xs font-medium ring-1 ring-foreground/15 transition-colors hover:bg-foreground/5 disabled:opacity-50"
-        >
-          {served ? "Order served" : "Simulate next status"}
-        </button>
+        <p className="mt-3 text-xs text-foreground/50">
+          This page updates on its own as the café prepares your order. Keep the link handy.
+        </p>
       </section>
 
       <section className="grid gap-6 pb-16 lg:grid-cols-12 lg:items-start">
@@ -168,7 +183,10 @@ function OrderPage() {
             )}
             <div className="flex justify-between gap-3">
               <dt className="text-foreground/55">Payment</dt>
-              <dd className="font-medium">{methodLabel[order.paymentMethod]} · demo</dd>
+              <dd className="font-medium">
+                {methodLabel[order.paymentMethod]} ·{" "}
+                {paymentLabel[order.paymentStatus] ?? order.paymentStatus}
+              </dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-foreground/55">Placed</dt>
@@ -182,9 +200,6 @@ function OrderPage() {
               </dd>
             </div>
           </dl>
-          <p className="mt-4 text-xs text-foreground/45">
-            No payment provider is connected to this demo, so no money has changed hands.
-          </p>
           <Link
             to="/menu"
             className="mt-5 block rounded-[min(1vw,10px)] bg-espresso py-3 text-center text-sm font-medium text-paper"
