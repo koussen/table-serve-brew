@@ -53,11 +53,12 @@ export function validateOrder(details: {
 
 function CheckoutPage() {
   const navigate = useNavigate();
-  const { lines, subtotal, deliveryFee, total, details, placeOrder } = useOrder();
+  const { lines, subtotal, deliveryFee, total, details, clearCart } = useOrder();
   const [method, setMethod] = useState<PaymentMethod>("gcash");
   const [processing, setProcessing] = useState(false);
+  const submitOrder = useServerFn(placeOrder);
 
-  const pay = () => {
+  const pay = async () => {
     const error = validateOrder(details);
     if (error) {
       toast.error(error);
@@ -68,14 +69,46 @@ function CheckoutPage() {
       return;
     }
     setProcessing(true);
-    // Demo only: this simulates the provider round-trip. Swap this block for a
-    // real payment intent call (GCash/Stripe/Paddle) without touching the UI.
-    window.setTimeout(() => {
-      const order = placeOrder(method);
+    try {
+      const result = await submitOrder({
+        data: {
+          type: details.type,
+          customerName: details.customerName,
+          tableNumber: details.tableNumber,
+          phone: details.phone,
+          address: details.address,
+          notes: details.notes,
+          paymentMethod: method,
+          lines: lines.map((l) => ({
+            itemId: l.itemId,
+            quantity: l.quantity,
+            ...(l.sizeId ? { sizeId: l.sizeId } : {}),
+            choiceIds: l.options.map((o) => o.choiceId),
+          })),
+        },
+      });
+
+      clearCart();
+
+      if (result.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+        return;
+      }
+
+      navigate({
+        to: "/order/$orderId",
+        params: { orderId: result.orderId },
+        search: { t: result.token },
+      });
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "We couldn't place your order. Please try again.",
+      );
+    } finally {
       setProcessing(false);
-      navigate({ to: "/order/$orderId", params: { orderId: order.id } });
-    }, 900);
+    }
   };
+
 
   return (
     <SiteLayout>
