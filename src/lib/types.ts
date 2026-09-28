@@ -58,7 +58,7 @@ export type OrderType = "dineIn" | "takeout" | "delivery";
 
 export type PaymentMethod = "gcash" | "card" | "cash";
 
-export type OrderStatus = "received" | "preparing" | "ready" | "served";
+export type OrderStatus = "received" | "preparing" | "ready" | "served" | "cancelled";
 
 export type OrderDetails = {
   type: OrderType;

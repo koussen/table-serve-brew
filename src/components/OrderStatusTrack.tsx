@@ -7,6 +7,7 @@ const labels: Record<OrderStatus, string> = {
   preparing: "Preparing",
   ready: "Ready",
   served: "Served",
+  cancelled: "Cancelled",
 };
 
 export function OrderStatusTrack({ status }: { status: OrderStatus }) {
