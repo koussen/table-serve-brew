@@ -108,10 +108,15 @@ export function Footer() {
           </div>
         </div>
 
-        <p className="mt-10 text-xs text-foreground/40">
-          © {new Date().getFullYear()} {shop.name} · Demo concept for an independent specialty
-          café. Business details and payments are for demonstration only.
-        </p>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-foreground/40">
+            © {new Date().getFullYear()} {shop.name} · Concept site for an independent specialty
+            café.
+          </p>
+          <Link to="/auth" className="text-xs text-foreground/40 hover:text-foreground">
+            Staff sign in
+          </Link>
+        </div>
       </div>
     </footer>
   );
