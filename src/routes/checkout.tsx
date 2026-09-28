@@ -98,7 +98,7 @@ function CheckoutPage() {
       navigate({
         to: "/order/$orderId",
         params: { orderId: result.orderId },
-        search: { t: result.token },
+        search: { t: result.token, paid: undefined },
       });
     } catch (err) {
       toast.error(
