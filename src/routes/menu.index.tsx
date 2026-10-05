@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useOrder } from "@/lib/order-store";
+import { peso } from "@/lib/format";
 import { SiteLayout } from "@/components/SiteLayout";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { MenuCard } from "@/components/MenuCard";
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/menu/")({
 
 function MenuPage() {
   const [active, setActive] = useState<CategoryId>("coffee");
+  const { itemCount, total } = useOrder();
   const items = menu.filter((i) => i.category === active);
   const label = categories.find((c) => c.id === active)?.label ?? "";
 
@@ -67,6 +70,22 @@ function MenuPage() {
           </h2>
           <div className="mt-6">
             <OrderSetup />
+          </div>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-foreground/10 pt-5">
+            <span className="text-sm text-foreground/70">
+              {itemCount} {itemCount === 1 ? "item" : "items"} ·{" "}
+              <span className="font-semibold text-foreground">{peso(total)}</span>
+            </span>
+            {itemCount > 0 ? (
+              <Link
+                to="/checkout"
+                className="rounded-[min(1vw,10px)] bg-espresso px-6 py-3 text-sm font-medium text-paper transition-colors hover:bg-espresso/90"
+              >
+                Proceed to payment
+              </Link>
+            ) : (
+              <span className="text-sm text-foreground/50">Add items to continue</span>
+            )}
           </div>
         </div>
       </section>
