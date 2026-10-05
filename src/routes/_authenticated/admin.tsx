@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-md px-5 py-24 text-center">
       <h1 className="font-serif text-2xl font-semibold">Something went wrong</h1>
-      <p className="mt-2 text-sm text-foreground/60">{error.message}</p>
+      <p className="mt-2 text-sm text-foreground/60">{error instanceof Error ? error.message : String(error)}</p>
     </div>
   ),
 });
