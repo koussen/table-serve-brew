@@ -1,12 +1,14 @@
+import { cafeImages } from "@/lib/cafe-images";
 import type { MenuItem, OptionGroup } from "@/lib/types";
 
-import spanishLatte from "@/assets/spanish-latte.jpg";
-import icedAmericano from "@/assets/iced-americano.jpg";
-import matchaLatte from "@/assets/matcha-latte.jpg";
-import croissants from "@/assets/croissants.jpg";
-import chickenRiceBowl from "@/assets/chicken-rice-bowl.jpg";
-import espressoPour from "@/assets/espresso-pour.jpg";
-import heroLatte from "@/assets/hero-latte.jpg";
+
+const spanishLatte = cafeImages["spanish-latte"].src;
+const icedAmericano = cafeImages["iced-americano"].src;
+const matchaLatte = cafeImages["matcha-latte"].src;
+const croissants = cafeImages["croissants"].src;
+const chickenRiceBowl = cafeImages["chicken-rice-bowl"].src;
+const espressoPour = cafeImages["espresso-pour"].src;
+const heroLatte = cafeImages["hero-latte"].src;
 
 const drinkSizes = [
   { id: "regular", label: "Regular (12oz)", priceDelta: 0 },

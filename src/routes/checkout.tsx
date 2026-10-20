@@ -12,6 +12,8 @@ import type { PaymentMethod } from "@/lib/types";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Checkout — Kape & Klase" },
       {
         name: "description",

@@ -9,6 +9,8 @@ import { shop } from "@/lib/shop";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Staff Sign In — Kape & Klase" },
       {
         name: "description",

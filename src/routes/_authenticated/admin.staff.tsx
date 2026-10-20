@@ -6,6 +6,15 @@ import { toast } from "sonner";
 import { listStaff, grantStaffRole, revokeStaffRole } from "@/lib/staff.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/staff")({
+  head: () => ({ meta: [
+    { title: "Team Access — Kape & Klase Staff" },
+    { name: "description", content: "Manage café team access to Kape & Klase orders." },
+    { property: "og:title", content: "Team Access — Kape & Klase Staff" },
+    { property: "og:description", content: "Manage café team access to Kape & Klase orders." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: StaffPage,
 });
 

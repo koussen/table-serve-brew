@@ -13,6 +13,8 @@ import type { CategoryId } from "@/lib/types";
 export const Route = createFileRoute("/menu/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Menu — Coffee, Pastries & Rice Bowls | Kape & Klase" },
       {
         name: "description",
@@ -55,7 +57,7 @@ function MenuPage() {
 
       <section className="py-6">
         <h2 className="sr-only">{label}</h2>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div key={active} className="cafe-menu-grid grid grid-cols-2 gap-4 lg:grid-cols-4">
           {items.map((item) => (
             <MenuCard key={item.id} item={item} />
           ))}
