@@ -8,6 +8,8 @@ import { peso } from "@/lib/format";
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Your Order — Kape & Klase" },
       {
         name: "description",

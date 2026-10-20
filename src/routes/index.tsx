@@ -1,3 +1,5 @@
+import { CafeImage } from "@/components/CafeImage";
+import { cafeImages } from "@/lib/cafe-images";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { MenuCard } from "@/components/MenuCard";
@@ -8,13 +10,17 @@ import { peso } from "@/lib/format";
 import { useOrder } from "@/lib/order-store";
 import { ArrowRightIcon } from "@/components/Icons";
 
-import heroLatte from "@/assets/hero-latte.jpg";
-import croissants from "@/assets/croissants.jpg";
-import espressoPour from "@/assets/espresso-pour.jpg";
+
+const heroLatte = cafeImages["hero-latte"].src;
+const croissants = cafeImages["croissants"].src;
+const espressoPour = cafeImages["espresso-pour"].src;
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [{ rel: "preload", as: "image", href: heroLatte, imageSrcSet: cafeImages["hero-latte"].srcSet, imageSizes: "(min-width: 1024px) 430px, (min-width: 640px) 62vw, 60vw", fetchPriority: "high" }],
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Kape & Klase — Specialty Coffee in Batangas City" },
       {
         name: "description",
@@ -71,23 +77,28 @@ function Home() {
 
           <div className="order-1 lg:order-2 lg:col-span-7">
             <div className="grid grid-cols-3 gap-3">
-              <img
+              <CafeImage
                 src={heroLatte}
+                loading="eager"
+                fetchPriority="high"
+                sizes="(min-width: 1024px) 430px, (min-width: 640px) 62vw, 60vw"
                 alt="Latte with hand-poured art on a wooden café table"
                 width={768}
                 height={1024}
                 className="col-span-2 row-span-2 aspect-4/5 w-full rounded-[min(1vw,12px)] object-cover"
               />
-              <img
+              <CafeImage
                 src={croissants}
+                sizes="(min-width: 1024px) 210px, 30vw"
                 alt="Freshly baked butter croissants on a ceramic plate"
                 loading="lazy"
                 width={816}
                 height={816}
                 className="aspect-square w-full rounded-[min(1vw,12px)] object-cover"
               />
-              <img
+              <CafeImage
                 src={espressoPour}
+                sizes="(min-width: 1024px) 210px, 30vw"
                 alt="Barista pulling an espresso shot into a glass"
                 loading="lazy"
                 width={816}
@@ -231,8 +242,9 @@ function Home() {
             </Link>
           </div>
           <div className="lg:col-span-7">
-            <img
+            <CafeImage
               src={espressoPour}
+              sizes="(min-width: 1024px) 650px, 100vw"
               alt="Espresso being pulled at the café counter"
               loading="lazy"
               width={816}

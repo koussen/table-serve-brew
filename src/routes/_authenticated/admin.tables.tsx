@@ -4,6 +4,15 @@ import QRCode from "qrcode";
 import { shop } from "@/lib/shop";
 
 export const Route = createFileRoute("/_authenticated/admin/tables")({
+  head: () => ({ meta: [
+    { title: "Table QR Codes — Kape & Klase Staff" },
+    { name: "description", content: "Table ordering QR codes for Kape & Klase." },
+    { property: "og:title", content: "Table QR Codes — Kape & Klase Staff" },
+    { property: "og:description", content: "Table ordering QR codes for Kape & Klase." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: TableCodes,
 });
 

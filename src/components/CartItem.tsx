@@ -1,3 +1,4 @@
+import { CafeImage } from "@/components/CafeImage";
 import type { CartLine } from "@/lib/types";
 import { peso } from "@/lib/format";
 import { useOrder } from "@/lib/order-store";
@@ -10,8 +11,9 @@ export function CartLineRow({ line }: { line: CartLine }) {
 
   return (
     <li className="flex gap-3 py-4">
-      <img
+      <CafeImage
         src={line.image}
+        sizes="64px"
         alt={line.name}
         loading="lazy"
         width={816}

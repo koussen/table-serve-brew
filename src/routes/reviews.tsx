@@ -5,6 +5,8 @@ import { ReviewSection } from "@/components/ReviewSection";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Reviews — Kape & Klase, Batangas City" },
       {
         name: "description",

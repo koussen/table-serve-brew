@@ -16,6 +16,15 @@ import { supabase } from "@/integrations/supabase/client";
 import type { OrderStatus } from "@/lib/types";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
+  head: () => ({ meta: [
+    { title: "Incoming Orders — Kape & Klase Staff" },
+    { name: "description", content: "Café staff order board for Kape & Klase." },
+    { property: "og:title", content: "Incoming Orders — Kape & Klase Staff" },
+    { property: "og:description", content: "Café staff order board for Kape & Klase." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: OrdersBoard,
 });
 

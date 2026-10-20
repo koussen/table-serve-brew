@@ -1,3 +1,4 @@
+import { CafeImage } from "@/components/CafeImage";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,13 +19,15 @@ export const Route = createFileRoute("/menu/$itemId")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Item unavailable — Kape & Klase" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Item unavailable — Kape & Klase" }, { name: "description", content: "This café item is unavailable." }, { property: "og:title", content: "Item unavailable — Kape & Klase" }, { property: "og:description", content: "This café item is unavailable." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }],
       };
     }
     const { item } = loaderData;
     const title = `${item.name} — ${peso(item.price)} | Kape & Klase`;
     return {
       meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
         { title },
         { name: "description", content: item.description },
         { property: "og:title", content: title },
@@ -122,8 +125,11 @@ function ItemPage() {
 
       <section className="grid gap-8 py-8 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-6">
-          <img
+          <CafeImage
             src={item.image}
+            loading="eager"
+            fetchPriority="high"
+            sizes="(min-width: 1024px) 540px, 100vw"
             alt={item.name}
             width={816}
             height={816}

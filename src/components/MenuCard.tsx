@@ -1,3 +1,4 @@
+import { CafeImage } from "@/components/CafeImage";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { MenuItem } from "@/lib/types";
@@ -30,8 +31,9 @@ export function MenuCard({ item }: { item: MenuItem }) {
         params={{ itemId: item.id }}
         className="mb-3 block overflow-hidden rounded-[min(1vw,10px)]"
       >
-        <img
+        <CafeImage
           src={item.image}
+          sizes="(min-width: 1024px) 260px, (min-width: 640px) 45vw, 43vw"
           alt={item.name}
           loading="lazy"
           width={816}

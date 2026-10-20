@@ -1,14 +1,19 @@
+import { CafeImage } from "@/components/CafeImage";
+import { cafeImages } from "@/lib/cafe-images";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { shop } from "@/lib/shop";
-import cafeInterior from "@/assets/cafe-interior.jpg";
-import espressoPour from "@/assets/espresso-pour.jpg";
-import croissants from "@/assets/croissants.jpg";
 import { ArrowRightIcon } from "@/components/Icons";
+
+const cafeInterior = cafeImages["cafe-interior"].src;
+const espressoPour = cafeImages["espresso-pour"].src;
+const croissants = cafeImages["croissants"].src;
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Our Story — Kape & Klase, Batangas City" },
       {
         name: "description",
@@ -37,8 +42,11 @@ function AboutPage() {
       </section>
 
       <section className="pb-12">
-        <img
+        <CafeImage
           src={cafeInterior}
+          loading="eager"
+          fetchPriority="high"
+          sizes="(min-width: 1280px) 1112px, 100vw"
           alt="Guests seated at wooden tables inside the café in afternoon light"
           width={1280}
           height={960}
@@ -64,10 +72,11 @@ function AboutPage() {
           </p>
         </div>
         <div className="lg:col-span-5">
-          <img
+          <CafeImage
             src={espressoPour}
             alt="Barista pulling an espresso shot"
             loading="lazy"
+            sizes="(min-width: 1024px) 450px, 100vw"
             width={816}
             height={816}
             className="aspect-square w-full rounded-[min(1.4vw,16px)] object-cover"
@@ -77,10 +86,11 @@ function AboutPage() {
 
       <section className="grid gap-10 pb-14 lg:grid-cols-12 lg:items-center">
         <div className="order-2 lg:order-1 lg:col-span-5">
-          <img
+          <CafeImage
             src={croissants}
             alt="Croissants baked that morning"
             loading="lazy"
+            sizes="(min-width: 1024px) 450px, 100vw"
             width={816}
             height={816}
             className="aspect-square w-full rounded-[min(1.4vw,16px)] object-cover"

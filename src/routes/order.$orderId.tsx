@@ -15,12 +15,14 @@ export const Route = createFileRoute("/order/$orderId")({
   }),
   head: () => ({
     meta: [
-      { title: "Your Order — Kape & Klase" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: "Order Tracking — Kape & Klase" },
       {
         name: "description",
         content: "Track your Kape & Klase order from received to served.",
       },
-      { property: "og:title", content: "Your Order — Kape & Klase" },
+      { property: "og:title", content: "Order Tracking — Kape & Klase" },
       {
         property: "og:description",
         content: "Track your order from received to served.",
